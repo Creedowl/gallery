@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gallery
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        security: DEBUG
+        web: ERROR
+
+security:
+  jwt:
+    token:
+      secret-key: 2e7c879d69b8b87ef9d7140c320b94d5a710866b35a5d4337ba0c28dfb2bc1da
+      expiration: 3600000
+
+mybatis-plus:
+  type-enums-package: com.creedowl.gallery.enums
+
+file:
+  suffix: jpg, jpeg, png, gif, webp
+  uploadPath: /Users/creedowl/uploads
