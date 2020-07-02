@@ -2,6 +2,7 @@ package com.creedowl.gallery.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.creedowl.gallery.enums.UploadFileType;
 import lombok.Data;
 
@@ -15,6 +16,8 @@ public class UploadFile {
     private String originFilename;
     private String filename;
     private UploadFileType type;
+    @TableLogic
+    private Boolean deleted;
 
     public UploadFile(Long userId, Long count, String originFilename, String filename, String type) {
         this.userId = userId;

@@ -45,6 +45,10 @@ public class UploadFileService {
         this.userService = userService;
     }
 
+    public UploadFIleMapper getUploadFIleMapper() {
+        return this.uploadFIleMapper;
+    }
+
     public UploadFile upload(MultipartFile file) {
         var filename = file.getOriginalFilename();
         if (filename == null) {
@@ -70,14 +74,20 @@ public class UploadFileService {
         return uploadFile;
     }
 
-    public UrlResource loadFile(String filename) {
+    public UploadFile getFile(String filename) {
         var wrapper = new QueryWrapper<UploadFile>();
         wrapper.eq("filename", filename);
-        var uploadFile = this.uploadFIleMapper.selectOne(wrapper);
+        return this.uploadFIleMapper.selectOne(wrapper);
+    }
+
+    public UrlResource loadFile(String filename, Boolean inc) {
+        var uploadFile = this.getFile(filename);
         if (uploadFile == null) {
             return null;
         }
-        uploadFile.inc();
+        if (inc) {
+            uploadFile.inc();
+        }
         this.uploadFIleMapper.updateById(uploadFile);
         var filePath = this.path.resolve(filename).normalize();
         try {
@@ -89,7 +99,7 @@ public class UploadFileService {
 
     public IPage<UploadFile> fileList(Page<UploadFile> page, Long userId) {
         var wrapper = new QueryWrapper<UploadFile>();
-        wrapper.eq("user_id", userId);
+        wrapper.eq("user_id", userId).orderByDesc("id");
         return this.uploadFIleMapper.selectPage(page, wrapper);
     }
 }

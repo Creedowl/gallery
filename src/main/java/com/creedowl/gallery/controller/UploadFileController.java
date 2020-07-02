@@ -47,16 +47,32 @@ public class UploadFileController {
             "image/gif",
             "image/webp"
     })
-    public UrlResource getImg(@PathVariable String filename, HttpServletResponse response) {
-        var resource = this.uploadFileService.loadFile(filename);
+    public UrlResource getImg(@PathVariable String filename,
+                              @RequestParam(defaultValue = "true") Boolean inc,
+                              HttpServletResponse response) {
+        var resource = this.uploadFileService.loadFile(filename, inc);
         if (resource == null) {
             response.setStatus(404);
         }
         return resource;
     }
 
+    @DeleteMapping("/s/{filename}")
+    @Operation(summary = "delete file by filename", security = @SecurityRequirement(name = "bearerAuth"))
+    public void deleteImg(@PathVariable String filename) {
+        var file = this.uploadFileService.getFile(filename);
+        if (file == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "File Not Found");
+        }
+        var user = this.userService.getMe();
+        if (!user.getId().equals(file.getUserId()) && !user.getIsAdmin()) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "Permission Denied");
+        }
+        this.uploadFileService.getUploadFIleMapper().deleteById(file.getId());
+    }
+
     @GetMapping("/files/{id}")
-    @Operation(summary = "get user list", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "get file list", security = @SecurityRequirement(name = "bearerAuth"))
     public UploadFileListDTO getFileList(@PathVariable Integer id, PageDTO pageDTO) {
         var loginUser = this.userService.getMe();
         var user = this.userService.getById(id);

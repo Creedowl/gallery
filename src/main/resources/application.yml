@@ -17,6 +17,7 @@ logging:
       springframework:
         security: DEBUG
         web: ERROR
+    com.creedowl.gallery.mapper: debug
 
 security:
   jwt:
@@ -26,6 +27,10 @@ security:
 
 mybatis-plus:
   type-enums-package: com.creedowl.gallery.enums
+  global-config:
+    db-config:
+      logic-delete-value: true
+      logic-not-delete-value: false
 
 file:
   suffix: jpg, jpeg, png, gif, webp
