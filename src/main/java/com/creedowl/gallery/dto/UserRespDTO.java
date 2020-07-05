@@ -10,10 +10,12 @@ public class UserRespDTO {
     private Long id;
     private String username;
     private Boolean isAdmin;
+    private Boolean locked;
 
     public UserRespDTO(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.isAdmin = user.getIsAdmin();
+        this.locked = user.getLocked();
     }
 }

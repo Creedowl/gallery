@@ -1,10 +1,9 @@
 package com.creedowl.gallery.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.creedowl.gallery.dto.PageDTO;
-import com.creedowl.gallery.dto.UserListDTO;
-import com.creedowl.gallery.dto.UserRespDTO;
+import com.creedowl.gallery.dto.*;
 import com.creedowl.gallery.model.User;
+import com.creedowl.gallery.security.JWTUtil;
 import com.creedowl.gallery.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,9 +17,17 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper, JWTUtil jwtUtil) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+    }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "get user list", security = @SecurityRequirement(name = "bearerAuth"))
+    public UserListDTO getUsers(PageDTO pageDTO) {
+        Page<User> page = new Page<>(pageDTO.getCurrent(), pageDTO.getSize());
+        return new UserListDTO(this.userService.page(page));
     }
 
     @GetMapping("/me")
@@ -36,11 +43,9 @@ public class UserController {
         return modelMapper.map(this.userService.getById(id), UserRespDTO.class);
     }
 
-    @GetMapping("/")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "get user list", security = @SecurityRequirement(name = "bearerAuth"))
-    public UserListDTO getUsers(PageDTO pageDTO) {
-        Page<User> page = new Page<>(pageDTO.getCurrent(), pageDTO.getSize());
-        return new UserListDTO(this.userService.page(page));
+    @PutMapping("/{id}")
+    @Operation(summary = "update user info", security = @SecurityRequirement(name = "bearerAuth"))
+    public UserRespDTO updateUserById(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdateDTO) {
+        return modelMapper.map(this.userService.updateUserInfo(id, userUpdateDTO), UserRespDTO.class);
     }
 }

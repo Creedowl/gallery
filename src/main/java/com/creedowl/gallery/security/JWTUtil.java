@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +27,8 @@ public class JWTUtil {
     private SecretKey key;
 
     private final JWTUserDetailsService jwtUserDetailsService;
+
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public JWTUtil(JWTUserDetailsService jwtUserDetailsService) {
         this.jwtUserDetailsService = jwtUserDetailsService;
@@ -62,5 +65,13 @@ public class JWTUtil {
         } catch (JwtException e) {
             return null;
         }
+    }
+
+    public String encodePassword(String password) {
+        return this.encoder.encode(password);
+    }
+
+    public Boolean checkPassword(String rawPassword, String encodedPassword) {
+        return this.encoder.matches(rawPassword, encodedPassword);
     }
 }

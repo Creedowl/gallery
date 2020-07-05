@@ -12,12 +12,12 @@ spring:
 
 logging:
   level:
-    root: WARN
+    root: INFO
     org:
       springframework:
         security: DEBUG
         web: ERROR
-    com.creedowl.gallery.mapper: debug
+    com.creedowl.gallery.mapper: DEBUG
 
 security:
   jwt:
