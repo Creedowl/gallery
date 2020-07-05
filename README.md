@@ -2,6 +2,8 @@
 
 采用`spring boot`开发的简易图床网站，设计模式的课程设计
 
+前端地址 [gallery-frontend](https://github.com/Creedowl/gallery-frontend)
+
 ## 技术栈
 
 - Spring Boot
@@ -21,7 +23,8 @@ create table public."user"
 			primary key,
 	username text not null,
 	password text not null,
-	is_admin boolean default false
+	is_admin boolean default false,
+	locked boolean default false
 );
 
 create table public.upload_file
@@ -33,6 +36,7 @@ create table public.upload_file
 	count integer not null,
 	origin_filename text not null,
 	filename text not null,
-	type integer not null
+	type integer not null,
+	deleted boolean default false
 );
 ```
